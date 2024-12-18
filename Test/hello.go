@@ -37,4 +37,7 @@ func init() {
     const day = 24 * time.Hour
     fmt.Printf("%T %[1]v\n", day.Seconds()) // "86400"
     fmt.Printf("%T\n", day.Seconds)
+
+    x := new(map[int]int)
+    (*x)[1] = 1
 }
