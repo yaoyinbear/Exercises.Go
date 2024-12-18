@@ -14,6 +14,10 @@ func moreFunc(a interface{}, b interface{}) bool {
 	return a.(int) > b.(int)
 }
 
+func lessFuncString(a any, b any) bool {
+	return a.(string) < b.(string)
+}
+
 func TestQSort(t *testing.T) {
 	type test struct {
 		name string
@@ -45,6 +49,34 @@ func TestQSort(t *testing.T) {
 
 			if !reflect.DeepEqual(o, tc.out) {
 				t.Errorf("expected:%#v, got:%#v", tc.out, o)
+			}
+		})
+	}
+}
+
+func TestQSortGenerics(t *testing.T) {
+	type test struct {
+		name string
+		in   []any
+		out  []any
+		fn   CmpFunc
+	}
+
+	tests := []test{
+		{name: "1", in: []any{3, 2, 4, 6, 8, 1, 9, 7, 5}, out: []any{1, 2, 3, 4, 5, 6, 7, 8, 9}, fn: lessFunc},
+		{name: "2", in: []any{1, 2, 3, 4, 5, 6, 7, 8, 9}, out: []any{1, 2, 3, 4, 5, 6, 7, 8, 9}, fn: lessFunc},
+		{name: "3", in: []any{9, 8, 7, 6, 5, 4, 3, 2, 1}, out: []any{1, 2, 3, 4, 5, 6, 7, 8, 9}, fn: lessFunc},
+		{name: "1.r", in: []any{3, 2, 4, 6, 8, 1, 9, 7, 5}, out: []any{9, 8, 7, 6, 5, 4, 3, 2, 1}, fn: moreFunc},
+		{name: "s1", in: []any{"a", "c", "ab", "cd", "d", "b"}, out: []any{"a", "ab", "b", "c", "cd", "d"}, fn: lessFuncString},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
+			QSortGenerics(tc.in, tc.fn)
+
+			if !reflect.DeepEqual(tc.in, tc.out) {
+				t.Errorf("expected:%#v, got:%#v", tc.out, tc.in)
 			}
 		})
 	}
